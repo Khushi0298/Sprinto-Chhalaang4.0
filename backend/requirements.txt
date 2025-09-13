@@ -10,3 +10,4 @@ pandas
 google-generativeai
 requests
 google
+matplotlib

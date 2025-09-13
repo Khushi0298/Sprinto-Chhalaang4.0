@@ -1,0 +1,21 @@
+SerialNo,Model,Owner,Status,PurchaseDate
+L1234,Dell XPS,Ravi,Active,2025-05-04
+L1235,MacBook Pro,Anya,Active,2025-03-05
+L1236,HP Elite,–,InStore,2025-01-04
+L1237,Lenovo ThinkPad,Arjun,Active,2024-11-05
+L1238,Acer Aspire,Priya,Active,2024-09-06
+L1239,Asus ZenBook,–,InStore,2024-07-08
+L1240,Dell Latitude,Neha,Active,2024-05-09
+L1241,HP Spectre,Aman,Active,2024-03-10
+L1242,Microsoft Surface,–,InStore,2024-01-10
+L1243,LG Gram,Vivek,Active,2023-11-11
+L1244,Dell XPS,Sanya,Active,2023-09-12
+L1245,MacBook Pro,–,InStore,2023-07-14
+L1246,HP Elite,Aisha,Active,2023-05-15
+L1247,Lenovo ThinkPad,Dev,Active,2023-03-16
+L1248,Acer Aspire,–,InStore,2023-01-15
+L1249,Asus ZenBook,Nikhil,Active,2022-11-16
+L1250,Dell Latitude,Rohan,Active,2022-09-17
+L1251,HP Spectre,–,InStore,2022-07-19
+L1252,Microsoft Surface,Pooja,Active,2022-05-20
+L1253,LG Gram,Varun,Active,2022-03-21
