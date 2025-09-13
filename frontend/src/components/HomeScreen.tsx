@@ -14,7 +14,7 @@ interface EvidenceItem {
   link: string;
 }
 
-export function HomeScreen() {
+export function HomeScreen(): React.ReactElement {
   const [currentState, setCurrentState] = useState<HomeState>('empty');
   const [selectedEvidence, setSelectedEvidence] = useState<EvidenceItem | null>(null);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
@@ -30,7 +30,7 @@ export function HomeScreen() {
     
     try {
       // Make API call to backend
-      const response = await fetch('/query', {
+      const response = await fetch('http://127.0.0.1:8000/query', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -83,7 +83,6 @@ export function HomeScreen() {
   return (
     <div className="flex min-h-[calc(100vh-73px)]">
       {/* FilterRail hidden */}
-      
       <main className="flex-1 p-carbon-6">
         <div className="max-w-7xl mx-auto">
           {renderMainContent()}
