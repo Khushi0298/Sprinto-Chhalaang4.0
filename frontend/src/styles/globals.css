@@ -1,0 +1,258 @@
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 14px;
+  /* Carbon-inspired colors */
+  --background: #ffffff;
+  --foreground: #161616;
+  --card: #ffffff;
+  --card-foreground: #161616;
+  --popover: #ffffff;
+  --popover-foreground: #161616;
+  --primary: #0F62FE;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f4f4;
+  --secondary-foreground: #161616;
+  --muted: #e0e0e0;
+  --muted-foreground: #6f6f6f;
+  --accent: #e0e0e0;
+  --accent-foreground: #161616;
+  --destructive: #DA1E28;
+  --destructive-foreground: #ffffff;
+  --warning: #F1C21B;
+  --warning-foreground: #161616;
+  --success: #24A148;
+  --success-foreground: #ffffff;
+  --border: #e0e0e0;
+  --input: transparent;
+  --input-background: #f4f4f4;
+  --switch-background: #8d8d8d;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: #0F62FE;
+  
+  /* Carbon spacing scale (8px increments) */
+  --spacing-1: 0.125rem; /* 2px */
+  --spacing-2: 0.25rem;  /* 4px */
+  --spacing-3: 0.5rem;   /* 8px */
+  --spacing-4: 0.75rem;  /* 12px */
+  --spacing-5: 1rem;     /* 16px */
+  --spacing-6: 1.5rem;   /* 24px */
+  --spacing-7: 2rem;     /* 32px */
+  --spacing-8: 2.5rem;   /* 40px */
+  --spacing-9: 3rem;     /* 48px */
+  --spacing-10: 4rem;    /* 64px */
+  
+  /* Carbon typography scale */
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.875rem;   /* 14px */
+  --text-base: 1rem;     /* 16px */
+  --text-lg: 1.125rem;   /* 18px */
+  --text-xl: 1.375rem;   /* 22px */
+  --text-2xl: 1.75rem;   /* 28px */
+  
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.5rem; /* 8px */
+  --radius-lg: 0.75rem; /* 12px */
+  
+  --sidebar: #ffffff;
+  --sidebar-foreground: #161616;
+  --sidebar-primary: #0F62FE;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f4f4f4;
+  --sidebar-accent-foreground: #161616;
+  --sidebar-border: #e0e0e0;
+  --sidebar-ring: #0F62FE;
+}
+
+.dark {
+  /* Carbon dark theme colors */
+  --background: #161616;
+  --foreground: #f4f4f4;
+  --card: #262626;
+  --card-foreground: #f4f4f4;
+  --popover: #262626;
+  --popover-foreground: #f4f4f4;
+  --primary: #0F62FE;
+  --primary-foreground: #ffffff;
+  --secondary: #393939;
+  --secondary-foreground: #f4f4f4;
+  --muted: #393939;
+  --muted-foreground: #c6c6c6;
+  --accent: #393939;
+  --accent-foreground: #f4f4f4;
+  --destructive: #DA1E28;
+  --destructive-foreground: #ffffff;
+  --warning: #F1C21B;
+  --warning-foreground: #161616;
+  --success: #24A148;
+  --success-foreground: #ffffff;
+  --border: #525252;
+  --input: transparent;
+  --input-background: #393939;
+  --switch-background: #6f6f6f;
+  --ring: #0F62FE;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: #262626;
+  --sidebar-foreground: #f4f4f4;
+  --sidebar-primary: #0F62FE;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #393939;
+  --sidebar-accent-foreground: #f4f4f4;
+  --sidebar-border: #525252;
+  --sidebar-ring: #0F62FE;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/**
+ * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
+ */
+@layer base {
+  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {
+    h1 {
+      font-size: var(--text-2xl); /* 28px */
+      font-weight: var(--font-weight-medium);
+      line-height: 1.25;
+    }
+
+    h2 {
+      font-size: var(--text-xl); /* 22px */
+      font-weight: var(--font-weight-medium);
+      line-height: 1.25;
+    }
+
+    h3 {
+      font-size: var(--text-lg);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.375;
+    }
+
+    h4 {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.375;
+    }
+
+    p {
+      font-size: var(--text-sm); /* 14px body text */
+      font-weight: var(--font-weight-normal);
+      line-height: 1.43;
+    }
+
+    label {
+      font-size: var(--text-sm);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.43;
+    }
+
+    button {
+      font-size: var(--text-sm);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.43;
+    }
+
+    input {
+      font-size: var(--text-sm);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.43;
+    }
+  }
+}
+
+html {
+  font-size: var(--font-size);
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Custom utilities for Carbon spacing */
+.space-carbon-1 { gap: var(--spacing-1); }
+.space-carbon-2 { gap: var(--spacing-2); }
+.space-carbon-3 { gap: var(--spacing-3); }
+.space-carbon-4 { gap: var(--spacing-4); }
+.space-carbon-5 { gap: var(--spacing-5); }
+.space-carbon-6 { gap: var(--spacing-6); }
+.space-carbon-7 { gap: var(--spacing-7); }
+.space-carbon-8 { gap: var(--spacing-8); }
+
+.p-carbon-1 { padding: var(--spacing-1); }
+.p-carbon-2 { padding: var(--spacing-2); }
+.p-carbon-3 { padding: var(--spacing-3); }
+.p-carbon-4 { padding: var(--spacing-4); }
+.p-carbon-5 { padding: var(--spacing-5); }
+.p-carbon-6 { padding: var(--spacing-6); }
+.p-carbon-7 { padding: var(--spacing-7); }
+
+.m-carbon-1 { margin: var(--spacing-1); }
+.m-carbon-2 { margin: var(--spacing-2); }
+.m-carbon-3 { margin: var(--spacing-3); }
+.m-carbon-4 { margin: var(--spacing-4); }
+.m-carbon-5 { margin: var(--spacing-5); }
+.m-carbon-6 { margin: var(--spacing-6); }
+
+/* Status colors */
+.text-success { color: var(--success); }
+.text-warning { color: var(--warning); }
+.text-danger { color: var(--destructive); }
+.bg-success { background-color: var(--success); }
+.bg-warning { background-color: var(--warning); }
+.bg-danger { background-color: var(--destructive); }

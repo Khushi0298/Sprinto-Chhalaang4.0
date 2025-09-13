@@ -1,37 +1,44 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { AppHeader } from './components/AppHeader';
+import { HomeScreen } from './components/HomeScreen';
+import { IntegrationsScreen } from './components/IntegrationsScreen';
+import { AuditLogScreen } from './components/AuditLogScreen';
+import { Toaster } from './components/ui/sonner';
 
+type Screen = 'home' | 'integrations' | 'audit';
 
-const App: React.FC = () => {
-  const [token, setToken] = useState('');
-  const [query, setQuery] = useState('');
-  const [result, setResult] = useState('');
+export default function App() {
+  const [currentScreen, setCurrentScreen] = useState<Screen>('home');
+  const [isDark, setIsDark] = useState(false);
 
-  const handleLogin = async () => {
-    const res = await axios.post('http://localhost:8000/login', null, {
-      params: { username: 'auditor', password: 'password' }
-    });
-    setToken(res.data.access_token);
+  const toggleDarkMode = () => {
+    setIsDark(!isDark);
+    document.documentElement.classList.toggle('dark');
   };
 
-  const handleQuery = async () => {
-    const res = await axios.post('http://localhost:8000/query', null, {
-      params: { query },
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    setResult(JSON.stringify(res.data, null, 2));
+  const renderScreen = () => {
+    switch (currentScreen) {
+      case 'home':
+        return <HomeScreen />;
+      case 'integrations':
+        return <IntegrationsScreen />;
+      case 'audit':
+        return <AuditLogScreen />;
+      default:
+        return <HomeScreen />;
+    }
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Evidence-on-Demand Bot</h1>
-      <button onClick={handleLogin}>Login (Demo)</button>
-      <br /><br />
-      <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Ask a question" style={{width: '300px'}}/>
-      <button onClick={handleQuery}>Send</button>
-      <pre>{result}</pre>
+    <div className="min-h-screen bg-background">
+      <AppHeader 
+        currentScreen={currentScreen}
+        onScreenChange={setCurrentScreen}
+        isDark={isDark}
+        onToggleDark={toggleDarkMode}
+      />
+      {renderScreen()}
+      <Toaster />
     </div>
   );
-};
-
-export default App;
+}
