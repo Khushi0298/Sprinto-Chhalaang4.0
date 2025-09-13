@@ -49,9 +49,7 @@ export function ResultsState({ query, answer, onEvidenceClick, onExport }: Resul
           </div>
           
           <div className="flex gap-2">
-            <Badge variant="outline">Source: GitHub</Badge>
-            <Badge variant="outline">PR: #456</Badge>
-            <Badge variant="outline">User: alice</Badge>
+            <Badge variant="outline">Source: GitHub API</Badge>
           </div>
           
           <div className="flex gap-3">

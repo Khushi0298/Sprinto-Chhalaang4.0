@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Shield } from 'lucide-react';
+import { Search, Loader2 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Input } from './ui/input';
@@ -10,6 +10,7 @@ interface EmptyStateProps {
 
 export function EmptyState({ onSearch }: EmptyStateProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   
   const samplePrompts = [
     "Why was PR #456 merged without approval?",
@@ -18,11 +19,13 @@ export function EmptyState({ onSearch }: EmptyStateProps) {
   ];
 
   const handlePromptClick = async (prompt: string) => {
+    if (isLoading) return; // Prevent multiple clicks while loading
     setSearchQuery(prompt);
     await makeSearchRequest(prompt);
   };
 
   const makeSearchRequest = async (query: string) => {
+    setIsLoading(true);
     try {
       // Make API call to backend
       const response = await fetch('http://localhost:8000/query', {
@@ -38,7 +41,7 @@ export function EmptyState({ onSearch }: EmptyStateProps) {
       }
 
       const data = await response.json();
-      const answer = data.answer || 'No answer received from backend';
+      const answer = data.response || 'No answer received from backend';
       
       // Send query and answer to HomeScreen
       onSearch(query, answer);
@@ -46,11 +49,13 @@ export function EmptyState({ onSearch }: EmptyStateProps) {
       console.error('Error fetching answer from backend:', error);
       const errorAnswer = 'Sorry, there was an error processing your query. Please try again.';
       onSearch(query, errorAnswer);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleSearch = async () => {
-    if (searchQuery.trim()) {
+    if (searchQuery.trim() && !isLoading) {
       await makeSearchRequest(searchQuery);
     }
   };
@@ -66,7 +71,7 @@ export function EmptyState({ onSearch }: EmptyStateProps) {
       {/* Illustration placeholder */}
       <div className="mb-8 flex flex-col items-center">
         <div className="w-32 h-32 bg-muted rounded-lg flex items-center justify-center mb-4">
-          <Shield className="h-16 w-16" style={{ color: '#0055FD' }} />
+          <img src="/Static/robot.png" alt="Robot" className="h-16 w-16" />
         </div>
         <h1 className="text-3xl font-medium" style={{ color: '#0055FD' }}>Evidence Bot</h1>
       </div>
@@ -89,10 +94,19 @@ export function EmptyState({ onSearch }: EmptyStateProps) {
             onKeyPress={handleKeyPress}
             placeholder="Ask a question..."
             className="flex-1 h-12 text-base"
+            disabled={isLoading}
           />
-          <Button onClick={handleSearch} className="px-6 h-12">
-            <Search className="h-4 w-4 mr-2" />
-            Search
+          <Button 
+            onClick={handleSearch} 
+            className="px-6 h-12"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Search className="h-4 w-4 mr-2" />
+            )}
+            {isLoading ? 'Searching...' : 'Search'}
           </Button>
         </div>
       </div>
@@ -103,7 +117,9 @@ export function EmptyState({ onSearch }: EmptyStateProps) {
         {samplePrompts.map((prompt, index) => (
           <Card 
             key={index}
-            className="p-4 cursor-pointer hover:bg-accent transition-colors text-left"
+            className={`p-4 cursor-pointer hover:bg-accent transition-colors text-left ${
+              isLoading ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
             onClick={() => handlePromptClick(prompt)}
           >
             <p className="text-sm">{prompt}</p>
