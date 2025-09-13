@@ -83,6 +83,8 @@ export function HomeScreen({ onStateChange }: {
       <ExportModal
         isOpen={isExportModalOpen}
         onClose={() => setIsExportModalOpen(false)}
+        query={query}
+        answer={answer}
       />
     </div>
   );
