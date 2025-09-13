@@ -5,6 +5,8 @@ import datetime
 import os
 from dotenv import load_dotenv, find_dotenv
 import pandas as pd
+import re
+import json
 load_dotenv(find_dotenv(), override=False)
 
 model = genai.GenerativeModel("gemini-1.5-flash")
@@ -22,6 +24,7 @@ headers = {
     "Accept": "application/vnd.github.v3+json"
 }
 
+csv_file = r"backend\app\data.csv"
 
 
 def fetch_repo_data(owner, repo):
@@ -207,66 +210,137 @@ def generate_issue_context(owner, repo):
             })
     return issue_summary
 
+def get_modified_prompt(query):
+    q_lower = query.lower()
+    if any(k in q_lower for k in ["pr ", "pull request", "merged", "review", "approv"]):
+        pr_query(query)
+    else:
+        ask_gemini_with_csv(query)
 
+query = "How many PRs have been waiting for review more than 24 hours?"
 
-def ask_gemini_with_csv(model, query, pr_info=None, csv_path=None):
+def pr_query(query):
+    owner = "vulnerable-apps"
+    repo = "juice-shop"
+    context_text = generate_full_context(owner, repo)
+    pr_info = context_text[:]
+    combined_prompt = f"""
+    You are an AI audit assistant. Please answer the following query with a JSON object with two keys:
+
+    1. "description": a concise, human-readable summary of the audit results.
+    2. "csv": a json with key value pairs where PR ID, TItle etc is mapped out correctly.
+
+    Query: {query}
+
+    PR DATA:
+    {pr_info}
+
+    The JSON output should look like this exactly (without markdown code blocks):
+
+    {{
+    "description": "...summary text...",
+    "csv": "PR ID,Title,Created At,Review Requested,Waiting Hours" in key value pairs
+    }}
+    """
+    return combined_prompt
+
+def ask_gemini_with_csv(query,model=model, csv_path=csv_file):
     # Read CSV file if provided
     csv_text = ""
     if csv_path:
         df = pd.read_csv(csv_path)
-        # Convert to readable text (Markdown table or raw CSV)
         csv_text = "CSV DATA:\n" + df.to_csv(index=False)
 
-    # Combine all context parts
     context = ""
-    if pr_info:
-        context += "PR DATA:\n" + pr_info + "\n\n"
     if csv_text:
         context += csv_text + "\n\n"
 
     prompt = f"""
     You are a GitHub analysis assistant.
 
-    Always follow this output format:
-    *Description*: A concise summary (1 to 3 sentences)
-    *Detailed Information*: A structured breakdown (tables, lists, or step-by-step).
+    Answer the following query with a JSON object containing exactly these keys:
 
-    Rules:
-    - Use only the provided PR DATA and CSV DATA to answer the question.
-    - If some data is not relevant, silently ignore it (do NOT mention irrelevance).
-    - Do not add disclaimers or commentary about missing or irrelevant data.
+    1. "description": a concise, human-readable summary of the audit results.
+    2. "csv": an array of JSON objects, each representing a single laptop.  
+    Each object contains the following fields:
+    - "SerialNo": A unique identifier for the laptop.
+    - "Model": The model of the HP laptop (e.g., "HP Elite" or "HP Spectre").
+    - "Owner": The name of the laptop owner or null if unassigned.
+    - "Status": Current laptop status ("Active" or "InStore").
+    - "PurchaseDate": Date the laptop was purchased.
 
+    Example JSON response expected:
+
+    {{
+    "description": "Two HP Elite and two HP Spectre laptops were purchased on the specified dates. The following table provides purchase details and ownership status.",
+    "csv": [
+        {{
+        "SerialNo": "L1236",
+        "Model": "HP Elite",
+        "Owner": null,
+        "Status": "InStore",
+        "PurchaseDate": "2021-06-10"
+        }},
+        {{
+        "SerialNo": "L1237",
+        "Model": "HP Spectre",
+        "Owner": "Ravi",
+        "Status": "Active",
+        "PurchaseDate": "2023-01-15"
+        }}
+    ]
+    }}
 
     Question:
     {query}
 
     Context:
     {context}
+
+    Respond ONLY with JSON matching the example structure exactly (no markdown or extra text).
     """
+
+
     response = model.generate_content(prompt)
     return response.text
+
+query = "HP Laptop info purchased" 
+
+# modified_prompt = get_modified_prompt(query)
+# response = model.generate_content(modified_prompt)
 # print(response.text)
-# query = "Which PRs are missing approvals and how many commits each has?"
-# query = " please provide number of laptops available"
-# query = "Show me all PRs raised"
-csv_file = r"C:\Users\deepe\Downloads\eod_bot_project_full\backend\app\data.csv"
-# print(context_text)
-# response = ask_gemini_with_csv(model, query, pr_info=context_text, csv_path=csv_file)
+# print("---------------------------------------------------------------------\n")
+# query2 = "Which PRs are missing approvals and how many commits each has?"
+# modified_prompt = get_modified_prompt(query2)
+# response = model.generate_content(modified_prompt)
+# print(response.text)
+def safe_json_loads(raw_output: str):
+    """
+    Cleans LLM/Gemini output and parses JSON safely.
+    """
+    # Remove leading/trailing whitespace
+    text = raw_output.strip()
 
-# print(response)
+    # If the model wrapped JSON in code fences like ```json ... ```
+    text = re.sub(r"^```(?:json)?", "", text)
+    text = re.sub(r"```$", "", text)
+    text = text.strip()
 
-def run_query(user_query: str):
-    # prs = fetch_repo_data(owner, repo)
-    context_text = generate_full_context(owner,repo)
-    # print(context_text)
-    response = model.generate_content(user_query + "\n\nPR DATA:\n" + context_text[:])
-    # response = ask_gemini_with_csv(model, user_query, pr_info=context_text, csv_path=csv_file)
-    return response.text
-# print(run_query("How many PRs have been waiting for review for more than 24hrs?"))
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError as e:
+        print("❌ JSON decode failed:", e)
+        print("Raw text was:\n", text[:500])
+        return None
+    
+def run_query(user_query:str):
+    modified_prompt = pr_query(user_query)
+    response = model.generate_content(modified_prompt)
+    print(type(response.text))
+    print(response.text)
+    res = response.text
+    res_json = safe_json_loads(res)
+    print(type(res_json))
+    return res_json
 
-# def run_query(user_query: str):
-#     # query2 = "Which PRs are missing approvals and how many commits each has?"
-#     modified_prompt = get_modified_prompt(user_query)
-#     response = model.generate_content(modified_prompt)
-#     return response.text
-
+print(run_query(query))
