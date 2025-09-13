@@ -4,4 +4,9 @@ python-jose
 pyjwt
 python-multipart
 openai
+pdfplumber
+os
+pandas
 google-generativeai
+requests
+google
