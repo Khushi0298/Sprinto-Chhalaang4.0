@@ -7,7 +7,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 # Import your GitHub+Gemini logic
-from app.github_gemini_handler_back import run_query, generate_repo_context, generate_issue_context, fetch_repo_data # <-- rename your script to github_gemini_handler.py
+from app.github_gemini_handler import run_query, generate_repo_context, generate_issue_context, fetch_repo_data # <-- rename your script to github_gemini_handler.py
 
 app = FastAPI()
 

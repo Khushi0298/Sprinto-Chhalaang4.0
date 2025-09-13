@@ -20,7 +20,6 @@ def generate_pdf_from_response(data, repo_stats=None, issues=None, prs=None):
     story.append(Paragraph(f"<b>Response:</b> {data['response']}", styles["Normal"]))
     story.append(Spacer(1, 12))
 
-    # Repo metadata
     if repo_stats:
         story.append(Paragraph("<b>Repository Metadata</b>", styles["Heading2"]))
         story.append(Paragraph(f"Repo: {repo_stats.get('name')} ({repo_stats.get('owner')})", styles["Normal"]))
@@ -28,7 +27,7 @@ def generate_pdf_from_response(data, repo_stats=None, issues=None, prs=None):
         story.append(Paragraph(f"Stars: {repo_stats.get('stars')}, Forks: {repo_stats.get('forks')}", styles["Normal"]))
         story.append(Spacer(1, 12))
 
-    # 📊 Graph 1: PR status distribution
+
     if prs:
         status_counts = {"merged": 0, "open": 0, "closed": 0}
         for pr in prs:
