@@ -24,7 +24,11 @@ export function AppHeader({ currentScreen, onScreenChange, isDark, onToggleDark,
         {/* Left: Logo and Navigation */}
         <div className="flex items-center space-carbon-6">
           <div className="flex items-center space-carbon-3">
-            <img src="https://sprinto.com/wp-content/uploads/2025/02/sprinto-logo-dark.svg" alt="Sprinto Logo" className="h-10 w-auto object-contain" />
+            <img 
+              src="https://sprinto.com/wp-content/uploads/2025/02/sprinto-logo-dark.svg"
+              alt="Sprinto Logo" 
+              className={`h-10 w-auto object-contain ${isDark ? 'invert brightness-0 filter' : ''}`}
+            />
           </div>
           
           <nav className="flex items-center space-carbon-1">
