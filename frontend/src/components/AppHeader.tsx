@@ -1,34 +1,43 @@
 import React from 'react';
-import { Shield, Bell, Moon, Sun } from 'lucide-react';
+import { Bell, Moon, Sun } from 'lucide-react';
 import { Button } from './ui/button';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
 
-type Screen = 'home' | 'integrations' | 'audit';
+
+export type Screen = 'home' | 'integrations' | 'audit';
 
 interface AppHeaderProps {
   currentScreen: Screen;
-  onScreenChange: (screen: Screen) => void;
+  onScreenChange: (screen: Screen, opts?: { fromResults?: boolean }) => void;
   isDark: boolean;
   onToggleDark: () => void;
+  showAskConfirm?: boolean;
+  setShowAskConfirm?: (open: boolean) => void;
+  isResultsState?: boolean;
 }
 
-export function AppHeader({ currentScreen, onScreenChange, isDark, onToggleDark }: AppHeaderProps) {
+export function AppHeader({ currentScreen, onScreenChange, isDark, onToggleDark, isResultsState }: AppHeaderProps) {
   return (
     <header className="bg-background border-b border-border">
       <div className="px-6 py-4 flex items-center justify-between">
         {/* Left: Logo and Navigation */}
         <div className="flex items-center space-carbon-6">
           <div className="flex items-center space-carbon-3">
-            <Shield className="h-6 w-6 text-primary" />
-            <h1 className="text-lg font-medium">SPRINTO</h1>
+            <img src="https://sprinto.com/wp-content/uploads/2025/02/sprinto-logo-dark.svg" alt="Sprinto Logo" className="h-10 w-auto object-contain" />
           </div>
           
           <nav className="flex items-center space-carbon-1">
             <Button
               variant={currentScreen === 'home' ? 'default' : 'ghost'}
               size="sm"
-              onClick={() => onScreenChange('home')}
+              onClick={() => {
+                if (isResultsState) {
+                  onScreenChange('home', { fromResults: true });
+                } else {
+                  onScreenChange('home');
+                }
+              }}
               className="hover:bg-[#FE763A] hover:text-white active:bg-[#FE763A] focus:bg-[#FE763A]"
               style={currentScreen === 'home' ? { backgroundColor: '#FE763A', color: 'white' } : {}}
             >
