@@ -5,7 +5,7 @@ pyjwt
 python-multipart
 openai
 pdfplumber
-os
+# os
 pandas
 google-generativeai
 requests

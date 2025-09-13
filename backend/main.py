@@ -1,34 +1,33 @@
-from fastapi import FastAPI, Depends, UploadFile, File
+# main.py
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from app.auth import verify_token, create_access_token
-from app.query_handler import handle_query
+import uvicorn
+
+# Import your GitHub+Gemini logic
+from app.github_gemini_handler import run_query # <-- rename your script to github_gemini_handler.py
 
 app = FastAPI()
 
-# Allow frontend dev server
+# Allow frontend (React/Postman) calls
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # change to ["http://localhost:5173"] for frontend only
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-@app.post("/login")
-async def login(username: str, password: str):
-    if username == "auditor" and password == "password":
-        token = create_access_token({"sub": username})
-        return {"access_token": token}
-    return {"error": "Invalid credentials"}
-
 @app.post("/query")
-async def query(query: str, user=Depends(verify_token)):
-    return await handle_query(query)
+async def query_api(request: Request):
+    body = await request.json()
+    user_query = body.get("query")
+    if not user_query:
+        return {"error": "Query is required"}
+    
+    # Call your logic
+    result = run_query(user_query)
+    return {"query": user_query, "response": result}
 
-@app.post("/upload")
-async def upload(file: UploadFile = File(...), user=Depends(verify_token)):
-    contents = await file.read()
-    save_path = f"data/docs/{file.filename}"
-    with open(save_path, "wb") as f:
-        f.write(contents)
-    return {"message": f"File {file.filename} uploaded successfully"}
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
