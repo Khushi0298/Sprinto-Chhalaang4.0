@@ -5,7 +5,7 @@ import { Card } from './ui/card';
 import { Input } from './ui/input';
 
 interface EmptyStateProps {
-  onSearch: (query?: string) => void;
+  onSearch: (query: string, answer: string) => void;
 }
 
 export function EmptyState({ onSearch }: EmptyStateProps) {
@@ -17,41 +17,41 @@ export function EmptyState({ onSearch }: EmptyStateProps) {
     "Share current laptop count and export."
   ];
 
-  const handlePromptClick = (prompt: string) => {
+  const handlePromptClick = async (prompt: string) => {
     setSearchQuery(prompt);
-    onSearch(prompt);
+    await makeSearchRequest(prompt);
+  };
+
+  const makeSearchRequest = async (query: string) => {
+    try {
+      // Make API call to backend
+      const response = await fetch('http://localhost:8000/query', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const answer = data.answer || 'No answer received from backend';
+      
+      // Send query and answer to HomeScreen
+      onSearch(query, answer);
+    } catch (error) {
+      console.error('Error fetching answer from backend:', error);
+      const errorAnswer = 'Sorry, there was an error processing your query. Please try again.';
+      onSearch(query, errorAnswer);
+    }
   };
 
   const handleSearch = async () => {
     if (searchQuery.trim()) {
-      try {
-        // Call the backend API
-        const response = await fetch('/apiApi', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            query: searchQuery.trim()
-          })
-        });
-
-        if (!response.ok) {
-          throw new Error(`API call failed: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log('API Response:', data);
-        
-        // Call the original onSearch function
-        onSearch(searchQuery);
-      } catch (error) {
-        console.error('Error calling backend API:', error);
-        // Still call onSearch even if API fails to maintain UI functionality
-        onSearch(searchQuery);
-      }
-    } else {
-      onSearch();
+      await makeSearchRequest(searchQuery);
     }
   };
 
