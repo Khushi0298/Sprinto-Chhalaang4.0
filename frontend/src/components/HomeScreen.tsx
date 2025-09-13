@@ -14,42 +14,26 @@ interface EvidenceItem {
   link: string;
 }
 
-export function HomeScreen(): React.ReactElement {
+export function HomeScreen({ onStateChange }: { 
+  onStateChange?: (isResults: boolean) => void;
+}): React.ReactElement {
   const [currentState, setCurrentState] = useState<HomeState>('empty');
   const [selectedEvidence, setSelectedEvidence] = useState<EvidenceItem | null>(null);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [answer, setAnswer] = useState('');
 
-  const handleSearch = async (searchQuery?: string) => {
-    const queryToSearch = searchQuery || query;
-    if (searchQuery) {
-      setQuery(searchQuery);
+  // Update parent component when state changes
+  React.useEffect(() => {
+    if (onStateChange) {
+      onStateChange(currentState === 'results');
     }
-    setCurrentState('loading');
-    
-    try {
-      // Make API call to backend
-      const response = await fetch('http://127.0.0.1:8000/query', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ query: queryToSearch }),
-      });
+  }, [currentState, onStateChange]);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setAnswer(data.answer || 'No answer received from backend');
-      setCurrentState('results');
-    } catch (error) {
-      console.error('Error fetching answer from backend:', error);
-      setAnswer('Sorry, there was an error processing your query. Please try again.');
-      setCurrentState('results');
-    }
+  const handleSearch = async (searchQuery: string, searchAnswer: string) => {
+    setQuery(searchQuery);
+    setAnswer(searchAnswer);
+    setCurrentState('results');
   };
 
   const handleEvidenceClick = (evidence: EvidenceItem) => {
